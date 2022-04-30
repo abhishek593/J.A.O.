@@ -311,15 +311,19 @@ def delete_bookmark_view(request, id):
     return redirect('jobapp:dashboard')
 
 
+from job.settings import BASE_DIR
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employer
 def applicant_details_view(request, id):
 
     applicant = get_object_or_404(User, id=id)
+    relative_path = "\\media\\" + str(id) + ".pdf"
+    file_path = str(BASE_DIR) + relative_path
 
     context = {
 
-        'applicant': applicant
+        'applicant': applicant,
+        'resume_link': file_path
     }
 
     return render(request, 'jobapp/applicant-details.html', context)

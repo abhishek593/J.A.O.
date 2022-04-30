@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'taggit',
     'user_visit',
     'resume',
+    'interview_scheduler'
 ]
 
 MIDDLEWARE = [

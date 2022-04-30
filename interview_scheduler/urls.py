@@ -1,0 +1,15 @@
+from django.urls import path
+from account import views
+from django.conf.urls.static import static
+from . import views
+from django.conf import settings
+app_name = "interview_scheduler"
+
+urlpatterns = [
+    # path('employee/register/', views.employee_registration, name='employee-registration'),
+    # path('employer/register/', views.employer_registration, name='employer-registration'),
+    # path('profile/edit/<int:id>/', views.employee_edit_profile, name='edit-profile'),
+    # path('login/', views.user_logIn, name='login'),
+    # path('logout/', views.user_logOut, name='logout'),
+    # path('resume/', views.UploadView.as_view(), name='fileupload'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

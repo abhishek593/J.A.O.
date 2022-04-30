@@ -165,3 +165,15 @@ class EmployeeProfileEditForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ["first_name", "last_name", "gender"]
+
+
+from django import forms
+from .models import Upload
+
+class UploadResumeForm(forms.ModelForm):
+
+    class Meta:
+        model = Upload
+        fields = [
+        'upload_file',
+        ]

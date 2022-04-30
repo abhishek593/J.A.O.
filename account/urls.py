@@ -12,5 +12,6 @@ urlpatterns = [
     path('profile/edit/<int:id>/', views.employee_edit_profile, name='edit-profile'),
     path('login/', views.user_logIn, name='login'),
     path('logout/', views.user_logOut, name='logout'),
-    path('resume/', views.UploadView.as_view(), name='fileupload'),
+    path('resume/<int:id>/', views.upload_resume, name='upload_resume'),
+    # path('resume/', views.UploadView.as_view(), name='fileupload'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

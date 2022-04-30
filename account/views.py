@@ -124,12 +124,39 @@ from django.urls import reverse_lazy
 
 from .models import Upload
 
-class UploadView(CreateView):
-    model = Upload
-    fields = ['upload_file', ]
-    success_url = reverse_lazy('fileupload')
+from django.shortcuts import render
+from .forms import UploadResumeForm
+from .models import Upload
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['documents'] = Upload.objects.all()
-        return context
+@login_required(login_url=reverse_lazy('accounts:login'))
+@user_is_employee
+def upload_resume(request, id=id):
+    user = get_object_or_404(User, id=id)
+    form = UploadResumeForm(request.POST or None, instance=user)
+    # form = UploadResumeForm()
+    if request.method == 'POST':
+        form = UploadResumeForm(request.POST, request.FILES)
+        if form.is_valid():
+            user_pr = form.save(commit=False)
+            user_pr.upload_file = request.FILES['upload_file']
+            # user_pr.display_picture = request.FILES['display_picture']
+            file_type = user_pr.upload_file.url.split('.')[-1]
+            file_type = file_type.lower()
+            user_pr.save()
+            return redirect(reverse("account:edit-profile", kwargs={
+                'id': user.id
+            }))
+            # return render(request, '', {'user_pr': user_pr})
+
+    context = {"form": form,}
+    return render(request, 'account/upload_form.html', context)
+
+# class UploadView(CreateView):
+#     model = Upload
+#     fields = ['upload_file', ]
+#     success_url = reverse_lazy('fileupload')
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['documents'] = Upload.objects.all()
+#         return context

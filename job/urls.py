@@ -21,4 +21,5 @@ urlpatterns = [
     path('', include('jobapp.urls')),
     path('', include('account.urls')),
     path('', include('resume.urls')),
+    path('', include('interview_scheduler.urls')),
 ]
