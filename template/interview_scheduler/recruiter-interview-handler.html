@@ -50,8 +50,13 @@
                         {% endif %}
                     {% endif %}
 
-                    <input type="email" id="interviewer-email" value="{{ interview_schedule.email_id_of_interviewer }}" name="interviewer-email" placeholder="Interviewer Email">
-                        <br/><br/>
+{#                <div class="form-group">#}
+{#                    <label for="exampleInputEmail1">Email address</label>#}
+{#                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">#}
+{#                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>#}
+{#                  </div>#}
+{#                    <input type="email" id="interviewer-email" value="{{ interview_schedule.email_id_of_interviewer }}" name="interviewer-email" placeholder="Interviewer Email">#}
+{#                        <br/><br/>#}
                     <label for="interview-slot-1">Select Interview Slot 1</label><br><br>
                     <input type="datetime-local" id="interview-slot-1" name="interview-slot-1" placeholder="DD/MM/YYYY">
                     <p>You selected for Interview Slot 1{{ interview_schedule.interview_slot1 }}</p>

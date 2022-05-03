@@ -22,6 +22,7 @@ urlpatterns = [
     path('dashboard/employer/close/<int:id>/', views.make_complete_job_view, name='complete'),
     path('dashboard/employer/delete/<int:id>/', views.delete_job_view, name='delete'),
     path('dashboard/employee/delete-bookmark/<int:id>/', views.delete_bookmark_view, name='delete-bookmark'),
-
+    path('dashboard/employer/offerletter', views.create_offer_letter, name='offer-letter'),
+    path('dashboard/employer/offerletter/offer_pdf/', views.venue_pdf, name='venue_pdf')
 
 ]

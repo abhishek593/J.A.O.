@@ -15,6 +15,135 @@ from jobapp.models import *
 from jobapp.permission import *
 User = get_user_model()
 
+from urllib import request
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse, reverse_lazy
+from django.http import Http404, HttpResponseRedirect, JsonResponse
+from django.core.serializers import serialize
+from django.shortcuts import HttpResponse
+from django.http import FileResponse
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.core.mail import send_mail
+from django.utils.encoding import force_bytes
+from django.conf import settings
+from django.contrib.auth.models import User
+import io
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
+from account.models import User
+from jobapp.forms import *
+from jobapp.models import *
+from jobapp.permission import *
+
+User = get_user_model()
+
+
+@login_required(login_url=reverse_lazy('accounts:login'))
+@user_is_employer
+# Generate a PDF File for offer letter
+def venue_pdf(request):
+    # Create Bytesstream buffer
+    buf = io.BytesIO()
+    # Create a canvas
+    c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
+    # Create a text object
+    textob = c.beginText()
+    textob.setTextOrigin(inch, inch)
+    textob.setFont("Helvetica", 12)
+
+    # Add some lines of text
+    # lines = [
+    #     "This is line 1",
+    #     "This is line 2",
+    #     "This is line 3"
+    # ]
+    offers = OfferModel.objects.all().last()
+    print(User.objects.make_random_password())
+    lines = [
+        str(offers.dateofofferlettergenerated) + '                                                                                                                   ',
+        'Mr./Mrs.' + offers.name + '.                                                                                                                                     ',
+        '                                                                                                                                                             ',
+        '             Sub: Application for ' + offers.jobrole + ' role at ' + offers.company_name + '                                                                    ',
+        '                                                                                                                                                             ',
+        '                                                                                                                                                             ',
+        'Dear ' + offers.name + ',                                                                                                                                      ',
+        '                                                                                                                                                             ',
+        'We are pleased to offer you the position of ' + offers.jobrole + ' in our organization, starting                                                              ',
+        'from ' + str(
+            offers.dateofjoining) + '.Your salary after joining will be INR ' + offers.salary + '                                                             ',
+        'per month.During this contract you will be not entitled for any statutory compliance of the company.                                                         ',
+        '                                                                                                                                                             ',
+        'During your job tenure, you may have access to trade secrets and confidential business information                                                           ',
+        'belonging to the company. By accepting this job offer, you acknowledge that you must keep all of                                                             ',
+        'this information strictly confidential, and refrain from using it for your own purposes or from                                                              ',
+        'disclosing it to anyone outside the company. In addition, you agree that, upon conclusion of                                                                 ',
+        'your employment, you will immediately return to the company all of its property, equipment and                                                               ',
+        'documents, including electronically stored information.                                                                                                      ',
+        '                                                                                                                                                             ',
+        'This offer is not a contract of employment, and either party may terminate employment at any                                                                 ',
+        'time, with or without cause.                                                                                                                                 ',
+        '                                                                                                                                                             ',
+        '                                                                                                                                                             ',
+        'Yours faithfully,                                                                                                                                            ',
+        offers.company_name + '                                                                                                                               ',
+        '                                                                                                                                                             ',
+
+        ]
+
+    # for offer in offers:
+    #     lines.append(offer.name)
+    #     lines.append(str(offer.dateofofferlettergenerated))
+    #     lines.append(offer.jobrole)
+    #     lines.append(offer.salary)
+    #     lines.append(str(offer.dateofjoining))
+    #     lines.append(offer.joblocation)
+    #     lines.append(offer.company_name)
+    #     lines.append(offer.url)
+
+    # Loop
+    for line in lines:
+        textob.textLine(line)
+
+    c.drawText(textob)
+    c.showPage()
+    c.save()
+    buf.seek(0)
+    return FileResponse(buf, as_attachment=True, filename='Offer_letter_' + offers.name + '.pdf')
+
+
+# Create offer letter view fumction
+def create_offer_letter(request):
+    form = JobOfferletter(request.POST or None)
+
+    user = get_object_or_404(User, id=request.user.id)
+    categories = Category.objects.all()
+
+    if request.method == 'POST':
+
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.user = user
+            instance.save()
+            # for save tags
+            form.save_m2m()
+            messages.success(
+                request, 'Your offer letter is succesfully generated !!!')
+            return redirect(reverse("jobapp:venue_pdf"))
+
+    context = {
+        'form': form,
+        # 'categories': categories
+    }
+
+    return render(request, 'jobapp/offer-letter.html', context)
+
 
 def home_view(request):
 

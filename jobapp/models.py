@@ -68,3 +68,17 @@ class BookmarkJob(models.Model):
     def __str__(self):
         return self.job.title
 
+
+class OfferModel(models.Model):
+
+    name = models.CharField(max_length=300)
+    dateofofferlettergenerated = models.DateField()
+    jobrole = models.CharField(max_length=300)
+    salary = models.CharField(max_length=300)
+    dateofjoining = models.DateField()
+    joblocation = models.CharField(max_length=300)
+    company_name = models.CharField(max_length=300)
+    url = models.CharField(max_length=300)
+
+    def __str__(self):
+        return self.name
