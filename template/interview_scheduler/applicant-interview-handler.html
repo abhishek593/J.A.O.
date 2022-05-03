@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <section class="site-section">
+    <div class="container">
+
+    {% if rejected %}
+        <h3>You are rejectetd in teh round {{ interview_schedule.round }}</h3>
+    {% else %}
+    <p>Recruiter Email: {{ interview_schedule.recruiter }}</p>
+    <p>Number of Rounds: {{ interview_schedule.num_rounds }}</p>
+    <p>Current Round Number: {{ interview_schedule.round }}</p>
+    <p>Current status: {{ interview_schedule.current_status }}</p>
+    <p>Round status: {{ interview_schedule.round_status }}</p>
+        {% if interview_schedule.round_status == 1 %}
+            <h3>You have choosen {{ interview_schedule.interview_slot1 }}</h3>
+        {% endif %}
+        <h3>Please choose from the following interview slots</h3>
+        <form method="POST" action="{% url 'interview_scheduler:applicant-interview-handler' request.user.id job_id%}" class="p-4 border rounded">
+            {% csrf_token %}
+        <select name="interview_slot" id="interview_slot">
+              <option value="1">{{ interview_schedule.interview_slot1 }}</option>
+            <option value="2">{{ interview_schedule.interview_slot2 }}</option>
+            <option value="3">{{ interview_schedule.interview_slot3 }}</option>
+        </select>
+            <input id="submit" type="submit">
+        </form>
+    <p>Round link: {{ round_link }}</p>
+    {% endif %}
+    </div>
+    </section>
+{% endblock %}

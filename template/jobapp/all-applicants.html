@@ -29,7 +29,8 @@
                                     <th>Name</th>
                                     <th>Job Title</th>
                                     <th>Applied Date</th>
-                                    <th>View </th>
+                                    <th>Interview/Job Status</th>
+                                    <th>View Profile</th>
                         
                                 </tr>
                             </thead>
@@ -41,6 +42,7 @@
                                     <td class="text-center"><a href="">{{ applicant.user.get_full_name }}</a></td     >
                                     <td>{{ applicant.job.title }}</td>
                                     <td>{{ applicant.timestamp }}</td>
+                                    <td><a href="{% url 'interview_scheduler:recruiter-interview-handler' applicant.user.id job_id %}">View Interview Status</a></td>
                                     <td>
                                         <a class="btn btn-info btn-sm" href="{% url 'jobapp:applicant-details' applicant.user.id %}"
                                                 role="button">

@@ -8,7 +8,7 @@ from django.urls import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.core.serializers import serialize
 
-
+from interview_scheduler.models import InterviewSchedule
 from account.models import User
 from jobapp.forms import *
 from jobapp.models import *
@@ -203,6 +203,12 @@ def apply_job_view(request, id):
                 instance.user = user
                 instance.save()
 
+                job = Job.objects.filter(pk=id)
+                if job is not None:
+                    print("here", job[0])
+                    interview = InterviewSchedule(job=job[0], applicant=user, recruiter=job[0].user)
+                    interview.save()
+
                 messages.success(
                     request, 'You have successfully applied for this job!')
                 return redirect(reverse("jobapp:single-job", kwargs={
@@ -246,7 +252,7 @@ def dashboard_view(request):
         'jobs': jobs,
         'savedjobs': savedjobs,
         'appliedjobs':appliedjobs,
-        'total_applicants': total_applicants
+        'total_applicants': total_applicants,
     }
 
     return render(request, 'jobapp/dashboard.html', context)
@@ -288,10 +294,10 @@ def make_complete_job_view(request, id):
 def all_applicants_view(request, id):
 
     all_applicants = Applicant.objects.filter(job=id)
-
     context = {
 
-        'all_applicants': all_applicants
+        'all_applicants': all_applicants,
+        'job_id': id
     }
 
     return render(request, 'jobapp/all-applicants.html', context)

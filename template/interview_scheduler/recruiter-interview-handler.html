@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %} 
+{% block content %}
+<section class="site-section">
+    <div class="container">
+                {% if interview_schedule.current_status == 0 %}
+                <h2>Candidate Rejected in
+                    {% if interview_schedule.round_status == 0 %}
+                        Resume Shortlisting Round
+                    {% else %}
+                        Round {{ interview_schedule.round_status }}
+                    </h2>
+                    {% endif %}
+            {% elif interview_schedule.current_status == 2 %}
+                <h2>Candidate has been given an offer.</h2>
+            {% else %}
+            <form method="POST" action="{% url 'interview_scheduler:recruiter-interview-handler' applicant_id job_id%}" class="p-4 border rounded">
+            {% csrf_token %}
+                        <select name="current_status" id="current_status">
+                            <option value="0">Reject the Candidate</option>
+                            <option value="1">Interviews Ongoing or to be Scheduled</option>
+                            <option value="2">Select the Candidate for Offer</option>
+                        </select>
+                    <h3>Total Number of rounds you selected: {{ interview_schedule.num_rounds }}</h3>
+                    <p>Select the number of rounds for this candidate(Excluding Resume Shortlisting Round):</p>
+                    <select name="num_rounds" id="num_rounds">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                    <option value="5">5</option>
+                    </select>
+
+                    <p>{{ interview_schedule.num_rounds }}</p>
+                    <h3>Current Round: {{ interview_schedule.round }}</h3>
+                    <p>Move the candidate to the Round:</p>
+                        <select name="current_round" id="current_round">
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                        <option value="5">5</option>
+                        </select>
+                    <h2>Next interview to Schedule {{ interview_schedule.round }}</h2>
+                    <p>For scheduling the round, please enter the email-id of interviewer and make the slots available for the candidate</p>
+                    <label for="interviewer-email">Enter Email ID of Interviewer:</label><br><br>
+                    {%  if show %}
+                        {% if interview_schedule.round_status == 1 %}
+                            <h3>Candidate has selected the interview Date {{ interview_schedule.interview_slot1 }}</h3>
+                        {% endif %}
+                    {% endif %}
+
+                    <input type="email" id="interviewer-email" value="{{ interview_schedule.email_id_of_interviewer }}" name="interviewer-email" placeholder="Interviewer Email">
+                        <br/><br/>
+                    <label for="interview-slot-1">Select Interview Slot 1</label><br><br>
+                    <input type="datetime-local" id="interview-slot-1" name="interview-slot-1" placeholder="DD/MM/YYYY">
+                    <p>You selected for Interview Slot 1{{ interview_schedule.interview_slot1 }}</p>
+                    <label for="interview-slot-2">Select Interview Slot 2</label><br><br>
+                    <input type="datetime-local" id="interview-slot-2" name="interview-slot-2" placeholder="DD/MM/YYYY">
+            <p>You selected for Interview Slot 2{{ interview_schedule.interview_slot2 }}</p>
+                    <label for="interview-slot-3">Select Interview Slot 3</label><br><br>
+                    <input type="datetime-local" id="interview-slot-3" name="interview-slot-3" placeholder="DD/MM/YYYY">
+            <p>You selected for Interview Slot 3{{ interview_schedule.interview_slot3 }}</p>
+                    <label for="round_link">Round Link</label><br><br>
+                    <input type="url" value="{{ interview_schedule.round_link }}" id="round_link" name="round_link" placeholder="Enter Interview Round Link">
+                    <input id="submit" type="submit">
+            </form>
+            {% endif %}
+    </div>
+
+</section>
+
+
+{% endblock %}

@@ -157,6 +157,7 @@
                                     <tr>
                                         <th>Job Title</th>
                                         <th>Posted Date</th>
+                                        <th>View Job Status</th>
                                         <th>Date expiring</th>
                                     </tr>
                                 </thead>
@@ -165,6 +166,7 @@
                                     <tr id="row_{{ job.id }}">
                                         <td><a href="{% url 'jobapp:single-job' job.job.id %}">{{ job.job.title }}</a></td>
                                         <td>{{ job.timestamp | date:'M d, Y'  }}</td>
+                                        <td><a href="{% url 'interview_scheduler:applicant-interview-handler' request.user.id job.id %}">Job Status</a></td>
                                         <td>{{ job.job.last_date | date:'M d, Y' }}</td>
                                     </tr>
                                     {% endfor %}
